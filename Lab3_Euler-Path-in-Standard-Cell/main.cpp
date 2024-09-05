@@ -1,4 +1,4 @@
-#include "mos.cpp"
+#include "mos.h"
 #include <bits/stdc++.h>
 // #include <chrono>
 // using namespace std::chrono;

@@ -1,12 +1,43 @@
-CC = g++
+# compiler settings 
+CXX = g++
+CXXFLAGS = -I ./inc -std=c++11
+OPTFLAGS = -march=native -funroll-loops -finline-functions -ffast-math -O3
+WARNINGS = -g -Wall
 
-SRC = main.cpp
-EXE = Lab3
+# Source files and object files
+SRCDIR = src
+OBJDIR = obj
+INCDIR = inc
+SRCS = $(wildcard $(SRCDIR)/*.cpp)
+OBJS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 
-.PHONY: all clean
+# testcase file
+CASEDIR = testcase
+OUTPUTDIR = output
+FIGDIR = fig
 
-all:
-	$(CC) $(SRC) -o $(EXE) -O3
+# change here!!
+TESTINPUT = case2.txt
+TESTOUTPUT = $(TESTINPUT).out
+
+TARGET = Lab3
+
+all: $(TARGET)
+
+$(OBJDIR):
+	@mkdir $(OBJDIR)
+
+$(OUTPUTDIR):
+	@mkdir $(OUTPUTDIR)
+
+$(TARGET): main.cpp $(OBJS)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) -c $< -o $@
+
+run: | $(OUTPUTDIR)
+	./$(TARGET) $(CASEDIR)/$(TESTINPUT) $(OUTPUTDIR)/$(TESTOUTPUT)
 
 clean:
-	@rm -f $(EXE)
+	rm -rf $(OBJDIR) $(TARGET) $(OUTPUTDIR)
