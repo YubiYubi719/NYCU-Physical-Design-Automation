@@ -29,8 +29,7 @@ struct TBtrack{
 
 struct Track{
     Track():watermark(-1) {};
-    Track(string s):watermark(-1),
-                    name(s) {};
+    Track(string s):name(s),watermark(-1) {};
     ~Track(){};
 
     string name;
@@ -50,8 +49,8 @@ public:
     vector<Net*> chooseNets();
     void routeTOP();
     void routeBOT();
-    void placeNetsFromTop(vector<Net*> sortedNets, int trackID);
-    void placeNetsFromBot(vector<Net*> sortedNets, int trackID);
+    void placeNetsFromTop(vector<Net*> sortedNets, size_t trackID);
+    void placeNetsFromBot(vector<Net*> sortedNets, size_t trackID);
     void writeOutput(string filename);
 
     // input information

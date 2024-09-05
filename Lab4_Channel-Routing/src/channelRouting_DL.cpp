@@ -11,22 +11,22 @@ void ChannelRouter_DL::build(string filename){
         if(curLine[0] == 'T'){
             string trackID_s;
             ss >> trackID_s;
-            int trackID = stoi(trackID_s.erase(0,1));
+            size_t trackID = stoi(trackID_s.erase(0,1));
             if(trackID+1 > topTracks.size()) topTracks.resize(trackID+1);
-            int lb, rb;
+            size_t lb, rb;
             ss >> lb >> rb;
             if(rb+1 > topTracks[trackID].trackSegs.size()) topTracks[trackID].trackSegs.resize(rb+1,false);
-            for(int i = lb; i <= rb; i++) topTracks[trackID].trackSegs[i] = true;
+            for(size_t i = lb; i <= rb; i++) topTracks[trackID].trackSegs[i] = true;
         }
         else if(curLine[0] == 'B'){
             string trackID_s;
             ss >> trackID_s;
-            int trackID = stoi(trackID_s.erase(0,1));
+            size_t trackID = stoi(trackID_s.erase(0,1));
             if(trackID+1 > botTracks.size()) botTracks.resize(trackID+1);
-            int lb, rb;
+            size_t lb, rb;
             ss >> lb >> rb;
             if(rb+1 > botTracks[trackID].trackSegs.size()) botTracks[trackID].trackSegs.resize(rb+1,false);
-            for(int i = lb; i <= rb; i++) botTracks[trackID].trackSegs[i] = true;
+            for(size_t i = lb; i <= rb; i++) botTracks[trackID].trackSegs[i] = true;
         }
         else{
             int pinID;
@@ -79,7 +79,7 @@ void ChannelRouter_DL::updateNetInf(){
     for(int i = 0; i < pinNum; i++){
         int topPin = topPins[i].originID;
         int botPin = botPins[i].originID;
-        int netNum = max(topPin,botPin) + 1;
+        size_t netNum = max(topPin,botPin) + 1;
         if(netNum > nets.size()) nets.resize(netNum);
         if(topPin != -1){
             if(nets[topPin].start == -1) nets[topPin].start = i;
@@ -177,7 +177,6 @@ void ChannelRouter_DL::cutNet(){
 
 vector<shared_ptr<SubNet_DL>> ChannelRouter_DL::chooseNets_TOP(){
     // Choose net from "top-->bot VCG" to avoid vertical constraint
-    int subnetNum = subnets.size();
     vector<shared_ptr<SubNet_DL>> zeroDegreeNets;
     // Pick up all unplaced zero-degree nets
     for(shared_ptr<SubNet_DL> subnet:subnets)
@@ -191,7 +190,6 @@ vector<shared_ptr<SubNet_DL>> ChannelRouter_DL::chooseNets_TOP(){
 
 vector<shared_ptr<SubNet_DL>> ChannelRouter_DL::chooseNets_BOT(){
     // Choose net from "bot-->top VCG" to avoid vertical constraint
-    int subnetNum = subnets.size();
     vector<shared_ptr<SubNet_DL>> zeroDegreeNets;
     // Pick up all unplaced zero-degree nets
     for(shared_ptr<SubNet_DL> subnet:subnets)
@@ -224,7 +222,7 @@ void ChannelRouter_DL::routeTOP(){
     // and move on to the next track until all nets are placed or topTrack are filled
     queue<vector<shared_ptr<SubNet_DL>>> T_queue;
     T_queue.push(chooseNets_TOP()); // push the start nets into T_queue
-    int trackID = 1; // from bot(ignore 0 since all blocked) to top --> 1 ~ n
+    size_t trackID = 1; // from bot(ignore 0 since all blocked) to top --> 1 ~ n
     while(!T_queue.front().empty() && trackID < topTracks.size()){
         vector<shared_ptr<SubNet_DL>> curNets = T_queue.front();
         T_queue.pop();
@@ -272,7 +270,7 @@ void ChannelRouter_DL::routeBOT(){
     }
 }
 
-void ChannelRouter_DL::placeNetsFromTop(vector<shared_ptr<SubNet_DL>> sortedNets, int trackID){
+void ChannelRouter_DL::placeNetsFromTop(vector<shared_ptr<SubNet_DL>> sortedNets, size_t trackID){
     // todo: During placing the nets, remember to update their neighbor's in_degree
     // ########################################
     // #         curTrack is topTrack         #
@@ -300,7 +298,7 @@ void ChannelRouter_DL::placeNetsFromTop(vector<shared_ptr<SubNet_DL>> sortedNets
     }
 }
 
-void ChannelRouter_DL::placeNetsFromBot(vector<shared_ptr<SubNet_DL>> sortedNets, int trackID){
+void ChannelRouter_DL::placeNetsFromBot(vector<shared_ptr<SubNet_DL>> sortedNets, size_t trackID){
     // todo: During placing the nets, remember to update their neighbor's in_degree
     // ########################################
     // #         curTrack is botTrack         #

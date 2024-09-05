@@ -11,20 +11,20 @@ void ChannelRouter::build(string filename){
             string trackID_s;
             ss >> trackID_s;
             int trackID = stoi(trackID_s.erase(0,1));
-            if(trackID+1 > topTracks.size()) topTracks.resize(trackID+1);
+            if(trackID+1 > (int)topTracks.size()) topTracks.resize(trackID+1);
             int lb, rb;
             ss >> lb >> rb;
-            if(rb+1 > topTracks[trackID].trackSegs.size()) topTracks[trackID].trackSegs.resize(rb+1,false);
+            if(rb+1 > (int)topTracks[trackID].trackSegs.size()) topTracks[trackID].trackSegs.resize(rb+1,false);
             for(int i = lb; i <= rb; i++) topTracks[trackID].trackSegs[i] = true;
         }
         else if(curLine[0] == 'B'){
             string trackID_s;
             ss >> trackID_s;
             int trackID = stoi(trackID_s.erase(0,1));
-            if(trackID+1 > botTracks.size()) botTracks.resize(trackID+1);
+            if(trackID+1 > (int)botTracks.size()) botTracks.resize(trackID+1);
             int lb, rb;
             ss >> lb >> rb;
-            if(rb+1 > botTracks[trackID].trackSegs.size()) botTracks[trackID].trackSegs.resize(rb+1,false);
+            if(rb+1 > (int)botTracks[trackID].trackSegs.size()) botTracks[trackID].trackSegs.resize(rb+1,false);
             for(int i = lb; i <= rb; i++) botTracks[trackID].trackSegs[i] = true;
         }
         else{
@@ -78,7 +78,7 @@ void ChannelRouter::updateNetRange(){
         int topPin = topPins[i];
         int botPin = botPins[i];
         int netNum = max(topPin,botPin) + 1;
-        if(netNum > nets.size()) nets.resize(netNum);
+        if(netNum > (int)nets.size()) nets.resize(netNum);
         if(topPin != -1){
             if(nets[topPin].start == -1) nets[topPin].start = i;
             else nets[topPin].end = i;
@@ -88,7 +88,7 @@ void ChannelRouter::updateNetRange(){
             else nets[botPin].end = i;
         }
     }
-    for(int i = 0; i < nets.size(); i++) nets[i].name = i+1;
+    for(size_t i = 0; i < nets.size(); i++) nets[i].name = i+1;
 }
 
 vector<Net*> ChannelRouter::chooseNets_TOP(){
@@ -136,7 +136,7 @@ void ChannelRouter::routeTOP(){
     // and move on to the next track until all nets are placed
     queue<vector<Net*>> T_queue;
     T_queue.push(chooseNets_TOP()); // push the start nets into T_queue
-    int trackID = 1; // from bot(ignore 0 since all blocked) to top --> 1 ~ n
+    size_t trackID = 1; // from bot(ignore 0 since all blocked) to top --> 1 ~ n
     while(!T_queue.front().empty() && trackID < topTracks.size()){
         vector<Net*> curNets = T_queue.front();
         T_queue.pop();
@@ -182,7 +182,7 @@ void ChannelRouter::routeBOT(){
         trackID++;
     }
 }
-void ChannelRouter::placeNetsFromTop(vector<Net*> sortedNets, int trackID){
+void ChannelRouter::placeNetsFromTop(vector<Net*> sortedNets, size_t trackID){
     TBtrack &curTrack = *(topTracks.rbegin()+trackID);
     for(Net* net:sortedNets){
         // check whether the track can accomodate the net
@@ -205,7 +205,7 @@ void ChannelRouter::placeNetsFromTop(vector<Net*> sortedNets, int trackID){
     }
 }
 
-void ChannelRouter::placeNetsFromBot(vector<Net*> sortedNets, int trackID){
+void ChannelRouter::placeNetsFromBot(vector<Net*> sortedNets, size_t trackID){
     // during placing the nets, remember to update their neighbor's in_degree
     // ########################################
     // #         curTrack is botTrack         #

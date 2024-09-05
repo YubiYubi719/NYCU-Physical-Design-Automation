@@ -17,8 +17,8 @@ public:
     SubNet_DL():name("-1"),
           start(-1),
           end(-1),
-          isPlaced(false),
-          parent(-1) {};
+          parent(-1),
+          isPlaced(false) {};
     SubNet_DL(int s,
            int e,
            int p,
@@ -30,20 +30,20 @@ public:
            isPlaced(false) {};
     ~SubNet_DL(){};
 
-    bool operator < (const SubNet_DL& rhs) const{ return this->start < rhs.start; }
+    bool operator< (const SubNet_DL& rhs) const{ return this->start < rhs.start; }
     static bool myCompare(const shared_ptr<SubNet_DL> a, const shared_ptr<SubNet_DL> b){ return *a < *b; }
 
     string track;
     string name;
     int start, end;
-    bool isPlaced;
     int parent;
+    bool isPlaced;
 };
 
 class Net_DL{
 public:
     Net_DL():start(-1),
-          end(-1) {};
+             end(-1) {};
     ~Net_DL(){};
 
     int name;
@@ -66,8 +66,7 @@ struct TBtrack_DL{
 
 struct Track_DL{
     Track_DL():watermark(-1) {};
-    Track_DL(string s):watermark(-1),
-                    name(s) {};
+    Track_DL(string s):name(s),watermark(-1) {};
     ~Track_DL(){};
 
     string name;
@@ -89,8 +88,8 @@ public:
     vector<shared_ptr<SubNet_DL>> chooseNets_BOT();
     void routeTOP();
     void routeBOT();
-    void placeNetsFromTop(vector<shared_ptr<SubNet_DL>> sortedNets, int trackID);
-    void placeNetsFromBot(vector<shared_ptr<SubNet_DL>> sortedNets, int trackID);
+    void placeNetsFromTop(vector<shared_ptr<SubNet_DL>> sortedNets, size_t trackID);
+    void placeNetsFromBot(vector<shared_ptr<SubNet_DL>> sortedNets, size_t trackID);
     void writeOutput(string filename);
 
     // ###################################
