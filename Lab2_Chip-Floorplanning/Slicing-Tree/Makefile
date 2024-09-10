@@ -17,7 +17,7 @@ OUTPUTDIR = output
 FIGDIR = fig
 
 # change here!!
-TESTINPUT = case2.txt
+TESTINPUT = case6.txt
 TESTOUTPUT = $(TESTINPUT).out
 
 TARGET = Floorplan

@@ -11,7 +11,7 @@ void ST::build(string filename){
 
         string blockName;
         ss >> blockName;
-        int blockID = stoi(blockName.erase(0,1));
+        size_t blockID = stoi(blockName.erase(0,1));
         if(blockID > blocks.size()) blocks.resize(blockID);
 
         int width, height;
@@ -55,7 +55,7 @@ list<pair<int,int>> ST::findWH(pair<int,int> wh){
 
 vector<Block*> ST::createNPE(vector<string>const &s){
     vector<Block*> npe;
-    for(int i = 0; i < s.size(); i++){
+    for(size_t i = 0; i < s.size(); i++){
         if(s[i] != "H" && s[i] != "V"){ // s[i] is an operand
             // store all possible width-height pair into block.whs
             Block* block = new Block(s[i],findWH(blocks[stoi(s[i])-1]));
@@ -144,7 +144,6 @@ double ST::calCost(vector<Block*> &npe){
     }
     Block* a = bs.top();
     double minCost = DBL_MAX;
-    int minArea = INT_MAX;
     for(auto it = a->whs.begin(); it != a->whs.end(); it++){
         int area = (*it).first * (*it).second;
         int longer = max((*it).first, (*it).second);
@@ -188,14 +187,13 @@ void ST::M2(vector<string> &s){
     }
     // invert operator chain from id = len_pos[i] to chain end
     int operator_pos_id = rand() % operator_pos.size();
-    int curID = operator_pos[operator_pos_id];
+    size_t curID = operator_pos[operator_pos_id];
     while(s[curID] == "H" || s[curID] == "V"){
         if(s[curID] == "H") s[curID] = "V";
         else s[curID] = "H";
         curID++;
         if(curID == len_s) break;
     }
-    
 }
 
 void ST::M3(vector<string> &s){
@@ -203,8 +201,8 @@ void ST::M3(vector<string> &s){
     vector<int> pos;
     int len_s = s.size();
     for(int i = 0; i < len_s-1; i++){
-        if((s[i] != "H" && s[i] != "V") && (s[i+1] == "H" || s[i+1] == "V")
-        || (s[i] == "H" || s[i] == "V") && (s[i+1] != "H" && s[i+1] != "V")){
+        if(((s[i] != "H" && s[i] != "V") && (s[i+1] == "H" || s[i+1] == "V"))
+        || ((s[i] == "H" || s[i] == "V") && (s[i+1] != "H" && s[i+1] != "V"))){
             pos.push_back(i);
         }
     }
@@ -438,11 +436,11 @@ void ST::printResult(vector<Block*> npe, string filename){
     output << "A = " << finalFPInf->w * finalFPInf->h << '\n';
     output << "R = " << (double)finalFPInf->w / (double)finalFPInf->h << '\n';
     vector<Block*> tmp;
-    for(int i = 0; i < npe.size(); i++){
+    for(size_t i = 0; i < npe.size(); i++){
         if(npe[i]->type != "H" && npe[i]->type != "V") tmp.push_back(npe[i]);
     }
     sort(tmp.begin(), tmp.end(), myCmp);
-    for(int i = 0; i < tmp.size(); i++){
+    for(size_t i = 0; i < tmp.size(); i++){
         output << "b" << i+1 << " " << tmp[i]->x << " " << tmp[i]->y;
         if(tmp[i]->w != blocks[i].first) output << " R";
         output << '\n';
