@@ -14,6 +14,10 @@ make run
     make step2
     make step3
     ```
+* Generate only the final MRST graph (you can generate MST graph by commenting  mst.rectilinearize() in line 8 of *main.cpp*)
+    ```
+    make graph
+    ```
 * Clean output files
     ```
     make clean
